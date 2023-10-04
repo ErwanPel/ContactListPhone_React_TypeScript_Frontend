@@ -1,22 +1,21 @@
-import { Phone } from "./Contacts";
 // import { useState } from "react";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { usePhoneBookContext } from "../context/phoneBookContext";
 
-interface props {
-  // username: string;
-  // mail: string;
-  // setUsername: React.Dispatch<React.SetStateAction<string>>;
-  // setMail: React.Dispatch<React.SetStateAction<string>>;
-  setPhoneBook: React.Dispatch<React.SetStateAction<Phone[]>>;
-}
+// interface props {
+// username: string;
+// mail: string;
+// setUsername: React.Dispatch<React.SetStateAction<string>>;
+// setMail: React.Dispatch<React.SetStateAction<string>>;
+// }
+// export default function Input({
+//   // username,
+//   // setUsername,
+//   // mail,
+//   // setMail,
 
-export default function Input({
-  // username,
-  // setUsername,
-  // mail,
-  // setMail,
-  setPhoneBook,
-}: props): JSX.Element {
+// }: props): JSX.Element {
+export default function Input(): JSX.Element {
   // Function with states
   // const [error, setError] = useState("");
   // const saveOnPhoneBook = (
@@ -41,25 +40,23 @@ export default function Input({
   //   }
   // };
 
-  const nameRef = useRef<null | HTMLInputElement>(null);
-  const mailRef = useRef<null | HTMLInputElement>(null);
+  const { setPhoneBook } = usePhoneBookContext();
 
-  const saveOnPhoneBook = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (nameRef.current && nameRef.current) {
-      if (nameRef.current.value && nameRef.current.value) {
-        setPhoneBook((prev) => [
-          ...prev,
-          { name: nameRef.current.value, mail: mailRef.current.value },
-        ]);
-      }
+  const nameRef = useRef<HTMLInputElement>(null!);
+  const mailRef = useRef<HTMLInputElement>(null!);
+
+  useEffect(() => {
+    if (nameRef.current) {
+      nameRef.current.focus();
     }
-  };
+  }, [setPhoneBook]);
 
   if (nameRef.current && mailRef.current) {
-    console.log(nameRef.current.value);
-    console.log(mailRef.current.value);
+    nameRef.current.value = "";
+    mailRef.current.value = "";
+    nameRef.current.focus();
   }
+
   return (
     // <form
     //   className=" w-full relative"
@@ -67,7 +64,19 @@ export default function Input({
     // >
     <form
       className=" w-full relative"
-      onSubmit={(event) => saveOnPhoneBook(event)}
+      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (nameRef.current.value && mailRef.current.value && setPhoneBook) {
+          setPhoneBook((prev) => [
+            ...prev,
+            {
+              name: nameRef.current.value,
+              mail: mailRef.current.value,
+            },
+          ]);
+        }
+      }}
     >
       <input
         className="px-2 bg-slate-400 w-1/2 py-3 rounded-l-md text-white placeholder:text-white "
@@ -76,6 +85,7 @@ export default function Input({
         id="name"
         placeholder="Your name"
         ref={nameRef}
+        required
         // onChange={(event) => {
         //   setError("");
         //   setUsername(event.target.value);
@@ -89,6 +99,7 @@ export default function Input({
         id="mail"
         placeholder="Your email"
         ref={mailRef}
+        required
         // onChange={(event) => {
         //   setError("");
         //   setMail(event.target.value);

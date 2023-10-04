@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { Phone } from "./Contacts";
+import { usePhoneBookContext } from "../context/phoneBookContext";
 
-interface props {
-  phoneBook: Phone[];
-  setPhoneBook: React.Dispatch<React.SetStateAction<Phone[]>>;
-}
-
-export default function ContactLine({
-  phoneBook,
-  setPhoneBook,
-}: props): JSX.Element {
+export default function ContactLine(): JSX.Element {
   const [visibleDelete, setVisibleDelete] = useState<null | number>(null);
+
+  const { phoneBook, setPhoneBook } = usePhoneBookContext();
 
   const deleteContact = (index: number) => {
     setPhoneBook((prev) => {
