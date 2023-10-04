@@ -50,7 +50,7 @@ export default function Input({
       if (nameRef.current.value && nameRef.current.value) {
         setPhoneBook((prev) => [
           ...prev,
-          { name: nameRef.current.value, mail: mailRef.current.value },
+          { name: nameRef.current!.value, mail: mailRef.current!.value },
         ]);
       }
     }
